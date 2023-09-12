@@ -2,7 +2,7 @@ import logging
 import uuid
 from pathlib import Path
 
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, Response
 
 from cos import client, bucket
 
@@ -16,7 +16,7 @@ MAX_SIZE = 1024 * 1024 * 5
 
 @app.get("/ping")
 async def root():
-    return "pong"
+    return Response(content="pong", media_type="text/plain")
 
 
 @app.post('/upload', summary="上传图片", description="上传图片", tags=["upload"])
@@ -38,7 +38,6 @@ async def upload_file(image: UploadFile = File(alias="Image")):
         Bucket=bucket,
         Body=image.file.read(),
         Key=key
-
     )
 
     logger.info(response)
